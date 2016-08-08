@@ -178,6 +178,13 @@ class Ach_Producer : public edm::EDAnalyzer {
       //correction table
       TH2D* effTable[5];
 
+      TH2D* Npos_uncorr;
+      TH2D* Nneg_uncorr;
+      TH2D* Npos_corr;
+      TH2D* Nneg_corr;
+      TH2D* Ach_uncorr;
+      TH2D* Ach_corr;
+
       TH1D* c2_ab;
       TH1D* c2_ac;
       TH1D* c2_cb;
@@ -233,6 +240,7 @@ class Ach_Producer : public edm::EDAnalyzer {
       bool reverseBeam_;
       bool doEffCorrection_;
       bool useEtaGap_;
+      bool doGenParticle_;
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;

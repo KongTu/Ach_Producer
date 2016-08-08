@@ -21,6 +21,7 @@
 
 
 Ach_Producer::Ach_Producer(const edm::ParameterSet& iConfig)
+genSrc_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genSrc")))
 {
 
   trackName_  =  iConfig.getParameter<edm::InputTag>("trackName");
@@ -42,6 +43,7 @@ Ach_Producer::Ach_Producer(const edm::ParameterSet& iConfig)
   reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
   doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
   useEtaGap_ = iConfig.getUntrackedParameter<bool>("useEtaGap");
+  doGenParticle_ = iConfig.getUntrackedParameter<bool>("doGenParticle");
 
   eff_ = iConfig.getUntrackedParameter<int>("eff");
 
@@ -171,6 +173,11 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   Ntrk->Fill( nTracks );
 
+  double N_pos_count_uncorr = 0.0;
+  double N_neg_count_uncorr = 0.0;
+
+  double N_pos_count_corr = 0.0;
+  double N_neg_count_corr = 0.0;
 
   for(unsigned it = 0; it < tracks->size(); it++){
 
@@ -186,7 +193,6 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     double chi2n = trk.normalizedChi2();
     double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
     chi2n = chi2n/nlayers;
-    double nPixelLayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
     double phi = trk.phi();
     double trkEta = trk.eta();
 
@@ -199,7 +205,6 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
     if(chi2n > offlineChi2_ ) continue;
     if(nhits < offlinenhits_ ) continue;
-    if( nPixelLayers <= 0 ) continue;
     if(trk.pt() < ptLow_ || trk.pt() > ptHigh_ ) continue;
     if(fabs(trkEta) > etaTracker_ ) continue;
 
@@ -207,10 +212,49 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     trkPt->Fill(trk.pt(), weight);
     trk_eta->Fill(trkEta, weight);
 
+    if( trk.charge() == +1 ){ N_pos_count_uncorr++; N_pos_count_corr += weight}
+    if( trk.charge() == -1 ){ N_neg_count_uncorr++; N_neg_count_corr += weight}
+
   }
 
+  double GEN_N_pos_count = 0.0;
+  double GEN_N_neg_count = 0.0;
 
+  if( doGenParticle_ ){
+    edm::Handle<reco::GenParticleCollection> genParticleCollection;
+    iEvent.getByToken(genSrc_, genParticleCollection);
+    
+    for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
+      const reco::GenParticle & genCand = (*genParticleCollection)[it];
+      int status = genCand.status();
+      double geneta = genCand.eta();
+      int gencharge = genCand.charge();
+      double genpt = genCand.pt();
+
+      if( status != 1 || gencharge == 0 ) continue;
+      if( fabs(geneta) > 2.4 ) continue;
+      if( genpt < 0.3 || genpt > 3.0 ) continue;
+
+      if( gencharge == +1 ){ GEN_N_pos_count++; }
+      if( gencharge == -1 ){ GEN_N_neg_count++; }
+
+    
+    }
+  }
+
+  double RECO_Ach_uncorr = (N_pos_count_uncorr - N_neg_count_uncorr) / (N_pos_count_uncorr + N_neg_count_uncorr);
+  double RECO_Ach_corr = (N_pos_count_corr - N_neg_count_corr) / (N_pos_count_corr + N_neg_count_corr);  
+  double GEN_Ach = (GEN_N_pos_count - GEN_N_neg_count) / (GEN_N_pos_count + GEN_N_neg_count);
+
+  Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);
+  Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count);
+
+  Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count);
+  Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count);
+
+  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach);
+  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach);
 
 
 }
@@ -246,7 +290,13 @@ Ach_Producer::beginJob()
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
+  Npos_uncorr = fs->make<TH2D>("Npos_uncorr",";Npos_uncorr", 2000, 0, 2000, 2000, 0, 2000);
+  Nneg_uncorr = fs->make<TH2D>("Nneg_uncorr",";Nneg_uncorr", 2000, 0, 2000, 2000, 0, 2000);
+  Npos_corr = fs->make<TH2D>("Npos_corr",";Npos_corr", 2000, 0, 2000, 2000, 0, 2000);
+  Nneg_corr = fs->make<TH2D>("Nneg_corr",";Nneg_corr", 2000, 0, 2000, 2000, 0, 2000);
 
+  Ach_uncorr = fs->make<TH2D>("Ach_uncorr",";Ach_uncorr", 3000, -0.15, 0.15, 3000, -0.15, 0.15 );
+  Ach_corr = fs->make<TH2D>("Ach_corr",";Ach_corr", 3000, -0.15, 0.15, 3000, -0.15, 0.15 );
 
 }
 // ------------ method called once each job just after ending the event loop  ------------

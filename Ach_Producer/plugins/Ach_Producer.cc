@@ -20,8 +20,10 @@
 #include "Ach_Producer/Ach_Producer/interface/Ach_ProducerBase.h"
 
 
-Ach_Producer::Ach_Producer(const edm::ParameterSet& iConfig)
+Ach_Producer::Ach_Producer(const edm::ParameterSet& iConfig):
+
 genSrc_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genSrc")))
+
 {
 
   trackName_  =  iConfig.getParameter<edm::InputTag>("trackName");
@@ -212,8 +214,8 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     trkPt->Fill(trk.pt(), weight);
     trk_eta->Fill(trkEta, weight);
 
-    if( trk.charge() == +1 ){ N_pos_count_uncorr++; N_pos_count_corr += weight}
-    if( trk.charge() == -1 ){ N_neg_count_uncorr++; N_neg_count_corr += weight}
+    if( trk.charge() == +1 ){ N_pos_count_uncorr++; N_pos_count_corr += weight;}
+    if( trk.charge() == -1 ){ N_neg_count_uncorr++; N_neg_count_corr += weight;}
 
   }
 

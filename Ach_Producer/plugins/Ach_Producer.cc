@@ -29,14 +29,11 @@ genSrc_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag
   trackName_  =  iConfig.getParameter<edm::InputTag>("trackName");
   vertexName_ =  iConfig.getParameter<edm::InputTag>("vertexName");
   towerName_ =  iConfig.getParameter<edm::InputTag>("towerName");
-  generalV0_ksName_  =  iConfig.getParameter<edm::InputTag>("generalV0_ksName");
-  generalV0_laName_  =  iConfig.getParameter<edm::InputTag>("generalV0_laName");
 
   trackSrc_ = consumes<reco::TrackCollection>(trackName_);
   vertexSrc_ = consumes<reco::VertexCollection>(vertexName_);
   towerSrc_ = consumes<CaloTowerCollection>(towerName_);
-  generalV0_ks_ = consumes<reco::VertexCompositeCandidateCollection>(generalV0_ksName_);
-  generalV0_la_ = consumes<reco::VertexCompositeCandidateCollection>(generalV0_laName_);
+
 
   Nmin_ = iConfig.getUntrackedParameter<int>("Nmin");
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");

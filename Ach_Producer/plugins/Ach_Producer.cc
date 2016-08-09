@@ -279,7 +279,7 @@ Ach_Producer::beginJob()
   edm::FileInPath fip1("Ach_Producer/Ach_Producer/data/Hydjet_PbPb_eff_v1.root");
   TFile f1(fip1.fullPath().c_str(),"READ");
   for(int i = 0; i < 5; i++){
-     effTable[i] = (TH2D*)f1.Get(Form("eff_%d",i));
+     effTable[i] = (TH2D*)f1.Get(Form("eff_%d",i+1));
   }
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);

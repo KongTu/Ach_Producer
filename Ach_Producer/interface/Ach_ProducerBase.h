@@ -178,6 +178,9 @@ class Ach_Producer : public edm::EDAnalyzer {
       //correction table
       TH2D* effTable[5];
 
+      TH1D* Ach_uncorr_weight[3];
+      TH1D* Ach_corr_weight[3];
+
       TH2D* Npos_uncorr;
       TH2D* Nneg_uncorr;
       TH2D* Npos_corr;

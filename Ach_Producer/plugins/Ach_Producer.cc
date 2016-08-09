@@ -242,9 +242,14 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
 
+
+
   double RECO_Ach_uncorr = (N_pos_count_uncorr - N_neg_count_uncorr) / (N_pos_count_uncorr + N_neg_count_uncorr);
   double RECO_Ach_corr = (N_pos_count_corr - N_neg_count_corr) / (N_pos_count_corr + N_neg_count_corr);  
   double GEN_Ach = (GEN_N_pos_count - GEN_N_neg_count) / (GEN_N_pos_count + GEN_N_neg_count);
+
+  double Ach_uw = Ach_uncorr_weight[eff_-2]->GetBinContent(Ach_uncorr_weight[eff_-2]->FindBin(RECO_Ach_uncorr));
+  double Ach_cw = Ach_corr_weight[eff_-2]->GetBinContent(Ach_corr_weight[eff_-2]->FindBin(RECO_Ach_corr));
 
   Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);
   Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count);
@@ -252,8 +257,8 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count);
   Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count);
 
-  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach);
-  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach);
+  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach, Ach_uw);
+  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach, Ach_cw);
 
 
 }
@@ -280,6 +285,18 @@ Ach_Producer::beginJob()
   TFile f1(fip1.fullPath().c_str(),"READ");
   for(int i = 0; i < 5; i++){
      effTable[i] = (TH2D*)f1.Get(Form("eff_%d",i+1));
+  }
+
+  edm::FileInPath fip2("Ach_Producer/Ach_Producer/data/Ach_weight.root");
+  TFile f2(fip2.fullPath().c_str(),"READ");
+  for(int i = 0; i < 3; i++){
+     Ach_corr_weight[i] = (TH2D*)f2.Get(Form("ApplyEPOS_%d",i));
+  }
+
+  edm::FileInPath fip3("Ach_Producer/Ach_Producer/data/Ach_uncorr_weight.root");
+  TFile f3(fip3.fullPath().c_str(),"READ");
+  for(int i = 0; i < 3; i++){
+     Ach_uncorr_weight[i] = (TH2D*)f3.Get(Form("ApplyEPOS_%d",i));
   }
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);

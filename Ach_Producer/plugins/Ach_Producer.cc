@@ -290,13 +290,13 @@ Ach_Producer::beginJob()
   edm::FileInPath fip2("Ach_Producer/Ach_Producer/data/Ach_weight.root");
   TFile f2(fip2.fullPath().c_str(),"READ");
   for(int i = 0; i < 3; i++){
-     Ach_corr_weight[i] = (TH2D*)f2.Get(Form("ApplyEPOS_%d",i));
+     Ach_corr_weight[i] = (TH1D*)f2.Get(Form("ApplyEPOS_%d",i));
   }
 
   edm::FileInPath fip3("Ach_Producer/Ach_Producer/data/Ach_uncorr_weight.root");
   TFile f3(fip3.fullPath().c_str(),"READ");
   for(int i = 0; i < 3; i++){
-     Ach_uncorr_weight[i] = (TH2D*)f3.Get(Form("ApplyEPOS_%d",i));
+     Ach_uncorr_weight[i] = (TH1D*)f3.Get(Form("ApplyEPOS_%d",i));
   }
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);

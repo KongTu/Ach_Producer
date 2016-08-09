@@ -276,7 +276,7 @@ Ach_Producer::beginJob()
     ptBinsArray[i] = ptBins_[i];
   }
 
-  edm::FileInPath fip1("Ach_Producer/Ach_Producer/data/Hydjet_PbPb_eff_v1.root");
+  edm::FileInPath fip1("Ach_Producer/Ach_Producer/data/EPOS_PbPb_eff_v1.root");
   TFile f1(fip1.fullPath().c_str(),"READ");
   for(int i = 0; i < 5; i++){
      effTable[i] = (TH2D*)f1.Get(Form("eff_%d",i+1));

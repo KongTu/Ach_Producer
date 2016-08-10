@@ -248,8 +248,9 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   double RECO_Ach_corr = (N_pos_count_corr - N_neg_count_corr) / (N_pos_count_corr + N_neg_count_corr);  
   double GEN_Ach = (GEN_N_pos_count - GEN_N_neg_count) / (GEN_N_pos_count + GEN_N_neg_count);
 
-  double Ach_uw = Ach_uncorr_weight[eff_-2]->GetBinContent(Ach_uncorr_weight[eff_-2]->FindBin(RECO_Ach_uncorr));
-  double Ach_cw = Ach_corr_weight[eff_-2]->GetBinContent(Ach_corr_weight[eff_-2]->FindBin(RECO_Ach_corr));
+  //double Ach_uw = Ach_uncorr_weight[eff_-2]->GetBinContent(Ach_uncorr_weight[eff_-2]->FindBin(RECO_Ach_uncorr));
+  //double Ach_cw = Ach_corr_weight[eff_-2]->GetBinContent(Ach_corr_weight[eff_-2]->FindBin(RECO_Ach_corr));
+  double Ach_gen = Ach_gen_weight[eff_-2]-->GetBinContent(Ach_gen_weight[eff_-2]->FindBin(GEN_Ach));
 
   Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);
   Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count);
@@ -257,8 +258,8 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count);
   Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count);
 
-  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach, Ach_uw);
-  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach, Ach_cw);
+  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach, Ach_gen);
+  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach, Ach_gen);
 
 
 }

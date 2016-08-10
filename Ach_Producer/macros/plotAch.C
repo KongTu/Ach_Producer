@@ -25,7 +25,7 @@ void plotAch(){
 
 	for(int i = 0; i < 3; i++){
 
-		file1[i] = new TFile(Form("../rootfiles/Ach_Producer_EPOS_v3_%d.root", i+1));
+		file1[i] = new TFile(Form("../rootfiles/Ach_Producer_EPOS_v2_%d.root", i+1));
 		file2[i] = new TFile(Form("../rootfiles/Ach_Producer_Hydjet_v2_%d.root", i+1));
 
 		Npos_uncorr1[i] = (TH2D*) file1[i]->Get("ana/Npos_uncorr");
@@ -71,29 +71,34 @@ void plotAch(){
 	cout << "uncorrected Hydjet: " << Ach_uncorr2[0]->GetCorrelationFactor() << endl;
 
 
-	// TFile f1("./Ach_uncorr_weight.root", "RECREATE");
+    TFile f1("./Ach_gen_weight.root", "RECREATE");
 
-	TH1D* test1 = Ach_corr1[1]->ProjectionY("test1", 1,3000);
-	TH1D* test2 = Ach_corr2[1]->ProjectionY("ApplyEPOS_0", 1,3000);
+    for(int i = 0; i < 3; i++){
+		
+		TH1D* test1 = Ach_corr1[i]->ProjectionY(Form("test%d",i), 1,3000);
+		TH1D* test2 = Ach_corr2[i]->ProjectionY(Form("ApplyEPOS_%d",i), 1,3000);
 
-	test1->SetMarkerStyle(20);
-	test2->SetMarkerStyle(20);
+		test1->SetMarkerStyle(20);
+		test2->SetMarkerStyle(20);
 
-	test1->SetMarkerColor(1);
-	test2->SetMarkerColor(2);
+		test1->SetMarkerColor(1);
+		test2->SetMarkerColor(2);
 
-	test1->SetLineColor(1);
-	test2->SetLineColor(2);
+		test1->SetLineColor(1);
+		test2->SetLineColor(2);
 
-	test1->Scale(1.0/Ach_corr1[1]->GetEntries());
-	test2->Scale(1.0/Ach_corr2[1]->GetEntries());
+		test1->Scale(1.0/Ach_corr1[i]->GetEntries());
+		test2->Scale(1.0/Ach_corr2[i]->GetEntries());
 
-	test1->Rebin(100);
-	test2->Rebin(100);
+		test1->Rebin(100);
+		test2->Rebin(100);
 
-	test1->Draw("P");
-	//test2->Divide( test1 );
-	test2->Draw("Psame");
+		//test1->Draw("P");
+		test2->Divide( test1 );
+		test2->Write();
+    }
+
+	
 
     return;
 

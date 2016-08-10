@@ -299,6 +299,12 @@ Ach_Producer::beginJob()
      Ach_uncorr_weight[i] = (TH1D*)f3.Get(Form("ApplyEPOS_%d",i));
   }
 
+  edm::FileInPath fip4("Ach_Producer/Ach_Producer/data/Ach_gen_weight.root");
+  TFile f4(fip4.fullPath().c_str(),"READ");
+  for(int i = 0; i < 3; i++){
+     Ach_gen_weight[i] = (TH1D*)f3.Get(Form("ApplyEPOS_%d",i));
+  }
+
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);

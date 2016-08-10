@@ -250,7 +250,7 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   //double Ach_uw = Ach_uncorr_weight[eff_-2]->GetBinContent(Ach_uncorr_weight[eff_-2]->FindBin(RECO_Ach_uncorr));
   //double Ach_cw = Ach_corr_weight[eff_-2]->GetBinContent(Ach_corr_weight[eff_-2]->FindBin(RECO_Ach_corr));
-  double Ach_gen = Ach_gen_weight[eff_-2]-->GetBinContent(Ach_gen_weight[eff_-2]->FindBin(GEN_Ach));
+  double Ach_gen = Ach_gen_weight[eff_-2]->GetBinContent(Ach_gen_weight[eff_-2]->FindBin(GEN_Ach));
 
   Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);
   Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count);

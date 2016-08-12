@@ -157,16 +157,18 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
     etHFtowerSum=etHFtowerSumPlus + etHFtowerSumMinus;
 
-    int bin = -1;
-    for(int j=0; j<200; j++){
-      if( etHFtowerSum >= centBins_[j] ){
-         bin = j; break;
-      }
-    }
+    HFsumEt->Fill( etHFtowerSum );
+    // int bin = -1;
+    // for(int j=0; j<200; j++){
+    //   if( etHFtowerSum >= centBins_[j] ){
+    //      bin = j; break;
+    //   }
+    // }
 
-    int hiBin = bin;
-    if( hiBin < Nmin_ || hiBin >= Nmax_ ) return;
-    cbinHist->Fill( hiBin );
+    //int hiBin = bin;
+    //if( hiBin < Nmin_ || hiBin >= Nmax_ ) return;
+    
+    //cbinHist->Fill( hiBin );
 
   }
 
@@ -250,7 +252,7 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   //double Ach_uw = Ach_uncorr_weight[eff_-2]->GetBinContent(Ach_uncorr_weight[eff_-2]->FindBin(RECO_Ach_uncorr));
   //double Ach_cw = Ach_corr_weight[eff_-2]->GetBinContent(Ach_corr_weight[eff_-2]->FindBin(RECO_Ach_corr));
-  double Ach_gen = Ach_gen_weight[eff_-2]->GetBinContent(Ach_gen_weight[eff_-2]->FindBin(GEN_Ach));
+  //double Ach_gen = Ach_gen_weight[eff_-2]->GetBinContent(Ach_gen_weight[eff_-2]->FindBin(GEN_Ach));
 
   Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);
   Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count);
@@ -258,8 +260,8 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count);
   Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count);
 
-  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach, Ach_gen);
-  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach, Ach_gen);
+  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach);
+  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach);
 
 
 }
@@ -313,13 +315,15 @@ Ach_Producer::beginJob()
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
+  HFsumEt = fs->make<TH1D>("HFsumEt", ";HFsumEt", 10000, 0, 10000);
+
   Npos_uncorr = fs->make<TH2D>("Npos_uncorr",";Npos_uncorr", 2000, 0, 2000, 2000, 0, 2000);
   Nneg_uncorr = fs->make<TH2D>("Nneg_uncorr",";Nneg_uncorr", 2000, 0, 2000, 2000, 0, 2000);
   Npos_corr = fs->make<TH2D>("Npos_corr",";Npos_corr", 2000, 0, 2000, 2000, 0, 2000);
   Nneg_corr = fs->make<TH2D>("Nneg_corr",";Nneg_corr", 2000, 0, 2000, 2000, 0, 2000);
 
-  Ach_uncorr = fs->make<TH2D>("Ach_uncorr",";Ach_uncorr", 3000, -0.15, 0.15, 3000, -0.15, 0.15 );
-  Ach_corr = fs->make<TH2D>("Ach_corr",";Ach_corr", 3000, -0.15, 0.15, 3000, -0.15, 0.15 );
+  Ach_uncorr = fs->make<TH2D>("Ach_uncorr",";Ach_uncorr", 1000, -0.4, 0.4, 1000, -0.4, 0.4 );
+  Ach_corr = fs->make<TH2D>("Ach_corr",";Ach_corr", 1000, -0.4, 0.4, 1000, -0.4, 0.4 );
 
 }
 // ------------ method called once each job just after ending the event loop  ------------

@@ -182,6 +182,8 @@ class Ach_Producer : public edm::EDAnalyzer {
       TH1D* Ach_corr_weight[3];
       TH1D* Ach_gen_weight[3];
 
+      TH1D* HFsumEt;
+
 
       TH2D* Npos_uncorr;
       TH2D* Nneg_uncorr;

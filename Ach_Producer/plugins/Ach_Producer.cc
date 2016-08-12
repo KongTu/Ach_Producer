@@ -142,6 +142,7 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   double etHFtowerSumMinus = 0.0;
   double etHFtowerSum = 0.0;
   
+
   if( useCentrality_ ){
 
     for( unsigned i = 0; i<towers->size(); ++ i){
@@ -157,7 +158,11 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
     etHFtowerSum=etHFtowerSumPlus + etHFtowerSumMinus;
 
+    if( etHFtowerSum < Nmin_ || etHFtowerSum > Nmax_ ) return;
+
     HFsumEt->Fill( etHFtowerSum );
+
+
     // int bin = -1;
     // for(int j=0; j<200; j++){
     //   if( etHFtowerSum >= centBins_[j] ){

@@ -242,10 +242,13 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       if( fabs(geneta) > 2.4 ) continue;
       if( genpt < 0.3 || genpt > 3.0 ) continue;
 
+      double efficiency = effTable[eff_]->GetBinContent(effTable[eff_]->FindBin(geneta, genpt));
+      double random = fRand(0.0, 1.0);
+      if( random > efficiency ) continue;
+
       if( gencharge == +1 ){ GEN_N_pos_count++; }
       if( gencharge == -1 ){ GEN_N_neg_count++; }
 
-    
     }
   }
 

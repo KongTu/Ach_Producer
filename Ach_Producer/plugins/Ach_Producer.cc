@@ -336,6 +336,11 @@ void
 Ach_Producer::endJob() 
 {
 }
+double Ach_Producer::fRand(double fMin, double fMax)
+{
+    double f = (double)rand() / RAND_MAX;
+    return fMin + f * (fMax - fMin);
+}
 void 
 Ach_Producer::beginRun(edm::Run const&, edm::EventSetup const&)
 {

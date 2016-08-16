@@ -4,22 +4,22 @@ using namespace std;
 
 void makeCorrectionFactor(){
 
-	TFile* file1[3];
-	TFile* file2[3];
+	TFile* file1[6];
+	TFile* file2[6];
 
-	TH2D* Ach_uncorr1[3];
-	TH2D* Ach_corr1[3];
+	TH2D* Ach_uncorr1[6];
+	TH2D* Ach_corr1[6];
 
-	TH2D* Ach_uncorr2[3];
-	TH2D* Ach_corr2[3];
+	TH2D* Ach_uncorr2[6];
+	TH2D* Ach_corr2[6];
 
 	for(int i = 0; i < 6; i++){
 
-		// file1[i] = new TFile(Form("../rootfiles/Ach_Producer_EPOS_v2_%d.root", i+1));
-		// file2[i] = new TFile(Form("../rootfiles/Ach_Producer_Hydjet_v2_%d.root", i+1));
+		file1[i] = new TFile(Form("../rootfiles/Ach_Producer_PbPb_EPOS_v6_%d.root", 6-i));
+		file2[i] = new TFile(Form("../rootfiles/Ach_Producer_PbPb_Hydjet_v6_%d.root", 6-i));
 
-		file1[i] = new TFile("../rootfiles/Ach_Producer_pPb_EPOS_v1_rebin.root");
-		file2[i] = new TFile("../rootfiles/Ach_Producer_pPb_HIJING_v1_rebin.root");
+		// file1[i] = new TFile("../rootfiles/Ach_Producer_pPb_EPOS_v1_rebin.root");
+		// file2[i] = new TFile("../rootfiles/Ach_Producer_pPb_HIJING_v1_rebin.root");
 
 		Ach_uncorr1[i] = (TH2D*) file1[i]->Get("ana/Ach_uncorr");
 		Ach_corr1[i] = (TH2D*) file1[i]->Get("ana/Ach_corr");
@@ -29,7 +29,7 @@ void makeCorrectionFactor(){
 
 	}
 
-	TFile* file3 = new TFile("../data/achdist_pPb.root");
+	TFile* file3 = new TFile("../data/achdist_PbPb_6ranges.root");
 
 	TH1D* ach_data[6];
 	for(int i = 0; i < 6; i++){
@@ -39,16 +39,16 @@ void makeCorrectionFactor(){
 	}
 	
 	TH1D* base1 = makeHist("base1", "", "A_{ch}", "DATA/EPOS", 1000, -0.4, 0.4, kBlack);
-	base1->GetYaxis()->SetRangeUser(0,2.2);
+	base1->GetYaxis()->SetRangeUser(0,0.2);
 	base1->GetYaxis()->SetNdivisions(5,6,0);
 	base1->GetXaxis()->SetNdivisions(5,8,0);
 	base1->GetYaxis()->SetTitleOffset(1.6);
 
-	Ach_corr1[0]->ProjectionX("test",1,1000);
-	test->SetMarkerStyle(24);
-	test->SetMarkerColor(kRed);
-	test->Scale( 1.0/Ach_corr1[0]->GetEntries() );
-	test->Rebin(10);
+	// Ach_corr1[0]->ProjectionX("test",1,1000);
+	// test->SetMarkerStyle(24);
+	// test->SetMarkerColor(kRed);
+	// test->Scale( 1.0/Ach_corr1[0]->GetEntries() );
+	// test->Rebin(10);
 	
 	TGaxis::SetMaxDigits(3);
 
@@ -66,6 +66,12 @@ void makeCorrectionFactor(){
 	TCanvas* c1 = makeMultiCanvas("c1","c1",3,2);
 	for(int mult = 0; mult < 6; mult++){
 
+		Ach_corr2[mult]->ProjectionX("test",1,1000);
+		test->SetMarkerStyle(24);
+		test->SetMarkerColor(kRed);
+		test->Scale( 1.0/Ach_corr2[mult]->GetEntries() );
+		test->Rebin(10);
+
 		c1->cd(mult+1);
 		gPad->SetLeftMargin(0.15);
 		gPad->SetBottomMargin(0.15);
@@ -77,9 +83,9 @@ void makeCorrectionFactor(){
 		ach_data[mult]->SetMarkerStyle(24);
 		ach_data[mult]->Scale( 1.0/ach_data[mult]->GetEntries() );
 		ach_data[mult]->Rebin(10);
-		ach_data[mult]->Divide( test );
+		//ach_data[mult]->Divide( test );
 		ach_data[mult]->Draw("Psame");
-		//test->Draw("Psame");
+		test->Draw("Psame");
 
 		latex1[mult]->SetNDC();
 		latex1[mult]->SetTextSize(25);
@@ -94,11 +100,11 @@ void makeCorrectionFactor(){
     w1->SetFillColor(0);
     w1->SetTextSize(23);
     w1->SetTextFont(43);
-    w1->AddEntry(ach_data[0], "pPb data", "P");
-    w1->AddEntry(test, "pPb EPOS", "P");
+    w1->AddEntry(ach_data[0], "PbPb data", "P");
+    w1->AddEntry(test, "PbPb EPOS", "P");
 
     c1->cd(2);
-    //w1->Draw("same");
+    w1->Draw("same");
 
  //    TFile f1("../data/Ach_reweight_pPb_data.root", "RECREATE");
     

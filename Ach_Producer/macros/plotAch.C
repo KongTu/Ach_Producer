@@ -25,10 +25,10 @@ void plotAch(){
 
 	for(int i = 0; i < 6; i++){
 
-		// file1[i] = new TFile(Form("../rootfiles/Ach_Producer_EPOS_v2_%d.root", i+1));
-		// file2[i] = new TFile(Form("../rootfiles/Ach_Producer_Hydjet_v2_%d.root", i+1));
+		file1[i] = new TFile(Form("../rootfiles/Ach_Producer_PbPb_EPOS_v6_%d.root", i+1));
+		file2[i] = new TFile(Form("../rootfiles/Ach_Producer_PbPb_Hydjet_v6_%d.root", i+1));
 
-		file1[i] = new TFile(Form("../rootfiles/Ach_Producer_pPb_EPOS_v5_%d.root", i+1));
+		//file1[i] = new TFile(Form("../rootfiles/Ach_Producer_pPb_EPOS_v5_%d.root", i+1));
 		//file2[i] = new TFile(Form("../rootfiles/Ach_Producer_pPb_HIJING_v2.root", i+1));
 
 		Npos_uncorr1[i] = (TH2D*) file1[i]->Get("ana/Npos_uncorr");
@@ -38,12 +38,12 @@ void plotAch(){
 		Ach_uncorr1[i] = (TH2D*) file1[i]->Get("ana/Ach_uncorr");
 		Ach_corr1[i] = (TH2D*) file1[i]->Get("ana/Ach_corr");
 
-		// Npos_uncorr2[i] = (TH2D*) file2[i]->Get("ana/Npos_uncorr");
-		// Nneg_uncorr2[i] = (TH2D*) file2[i]->Get("ana/Nneg_uncorr");
-		// Npos_corr2[i] = (TH2D*) file2[i]->Get("ana/Npos_corr");
-		// Nneg_corr2[i] = (TH2D*) file2[i]->Get("ana/Nneg_corr");
-		// Ach_uncorr2[i] = (TH2D*) file2[i]->Get("ana/Ach_uncorr");
-		// Ach_corr2[i] = (TH2D*) file2[i]->Get("ana/Ach_corr");
+		Npos_uncorr2[i] = (TH2D*) file2[i]->Get("ana/Npos_uncorr");
+		Nneg_uncorr2[i] = (TH2D*) file2[i]->Get("ana/Nneg_uncorr");
+		Npos_corr2[i] = (TH2D*) file2[i]->Get("ana/Npos_corr");
+		Nneg_corr2[i] = (TH2D*) file2[i]->Get("ana/Nneg_corr");
+		Ach_uncorr2[i] = (TH2D*) file2[i]->Get("ana/Ach_uncorr");
+		Ach_corr2[i] = (TH2D*) file2[i]->Get("ana/Ach_corr");
 
 	}
 
@@ -58,18 +58,19 @@ void plotAch(){
 		Ach_uncorr1[i]->ProfileX(Form("Ach_uncorr1_%d",i+1), 1, 1000, "");
 		Ach_corr1[i]->ProfileX(Form("Ach_corr1_%d",i+1), 1, 1000, "");
 
-		// Npos_uncorr2[i]->ProfileX(Form("Npos_uncorr2_%d",i+1), 1, 2000, "");
-		// Nneg_uncorr2[i]->ProfileX(Form("Nneg_uncorr2_%d",i+1), 1, 2000, "");
-		// Npos_corr2[i]->ProfileX(Form("Npos_corr2_%d",i+1), 1, 2000, "");
-		// Nneg_corr2[i]->ProfileX(Form("Nneg_corr2_%d",i+1), 1, 2000, "");
-		// Ach_uncorr2[i]->ProfileX(Form("Ach_uncorr2_%d",i+1), 1, 5000, "");
-		// Ach_corr2[i]->ProfileX(Form("Ach_corr2_%d",i+1), 1, 5000, "");
+		Npos_uncorr2[i]->ProfileX(Form("Npos_uncorr2_%d",i+1), 1, 2000, "");
+		Nneg_uncorr2[i]->ProfileX(Form("Nneg_uncorr2_%d",i+1), 1, 2000, "");
+		Npos_corr2[i]->ProfileX(Form("Npos_corr2_%d",i+1), 1, 2000, "");
+		Nneg_corr2[i]->ProfileX(Form("Nneg_corr2_%d",i+1), 1, 2000, "");
+		Ach_uncorr2[i]->ProfileX(Form("Ach_uncorr2_%d",i+1), 1, 1000, "");
+		Ach_corr2[i]->ProfileX(Form("Ach_corr2_%d",i+1), 1, 1000, "");
 
 	}
 
 	//string multiplicity[] = {"80 #leq N^{offline}_{trk} < 120", "120 #leq N^{offline}_{trk} < 150","150 #leq N^{offline}_{trk} < 1000"}
-	string multiplicity[] = {"90 #leq N^{offline}_{trk} < 120", "120 #leq N^{offline}_{trk} < 150","150 #leq N^{offline}_{trk} < 185",
-                             "185 #leq N^{offline}_{trk} < 220", "220 #leq N^{offline}_{trk} < 260","260 #leq N^{offline}_{trk} < 300" };
+	// string multiplicity[] = {"90 #leq N^{offline}_{trk} < 120", "120 #leq N^{offline}_{trk} < 150","150 #leq N^{offline}_{trk} < 185",
+ //                             "185 #leq N^{offline}_{trk} < 220", "220 #leq N^{offline}_{trk} < 260","260 #leq N^{offline}_{trk} < 300" };
+    string multiplicity[] = {"30-40%", "40-50%","50-60%","60-70%", "70-80%", "80-90%"};
 
 	TCanvas* c2 = makeMultiCanvas("c3","",3,2);
 	for(int mult = 0; mult < 6; mult++){
@@ -79,21 +80,21 @@ void plotAch(){
 		gPad->SetBottomMargin(0.11);
 		gPad->SetTopMargin(0.1);
 		gPad->SetTicks();
-		Ach_corr1[mult]->SetStats(kFALSE);
-		Ach_corr1[mult]->RebinX(20);
-		Ach_corr1[mult]->RebinY(20);
-		Ach_corr1[mult]->GetYaxis()->SetTitle("GEN A_{ch}");
-		Ach_corr1[mult]->GetYaxis()->SetTitleSize(0.05);
-		Ach_corr1[mult]->GetYaxis()->CenterTitle();
-		Ach_corr1[mult]->GetXaxis()->SetTitle("RECO A_{ch}");
-		Ach_corr1[mult]->GetXaxis()->CenterTitle();
-		Ach_corr1[mult]->GetXaxis()->SetTitleSize(0.05);
-		Ach_corr1[mult]->SetTitle( multiplicity[mult].c_str() );
-		Ach_corr1[mult]->Draw("colz");
+		Ach_corr2[mult]->SetStats(kFALSE);
+		Ach_corr2[mult]->RebinX(20);
+		Ach_corr2[mult]->RebinY(20);
+		Ach_corr2[mult]->GetYaxis()->SetTitle("GEN A_{ch}");
+		Ach_corr2[mult]->GetYaxis()->SetTitleSize(0.05);
+		Ach_corr2[mult]->GetYaxis()->CenterTitle();
+		Ach_corr2[mult]->GetXaxis()->SetTitle("RECO A_{ch}");
+		Ach_corr2[mult]->GetXaxis()->CenterTitle();
+		Ach_corr2[mult]->GetXaxis()->SetTitleSize(0.05);
+		Ach_corr2[mult]->SetTitle( multiplicity[mult].c_str() );
+		Ach_corr2[mult]->Draw("colz");
 
-		cout << "corrected EPOS: " << Ach_corr1[mult]->GetCorrelationFactor() << endl;
+		cout << "corrected EPOS: " << Ach_corr2[mult]->GetCorrelationFactor() << endl;
 
-		TLatex* latex3 = new TLatex(0.27, 0.16, Form("Correlation Factor: %.3f",Ach_corr1[mult]->GetCorrelationFactor() ));
+		TLatex* latex3 = new TLatex(0.20, 0.16, Form("Hydjet Correlation Factor: %.3f",Ach_corr2[mult]->GetCorrelationFactor() ));
 	    latex3->SetNDC();
 	    latex3->SetTextSize(20);
 	    latex3->SetTextFont(43);

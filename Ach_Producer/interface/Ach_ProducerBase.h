@@ -157,6 +157,7 @@ class Ach_Producer : public edm::EDAnalyzer {
       virtual void endRun(edm::Run const&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+      virtual double fRand(double fMin, double fMax);
 
       // ----------member data ---------------------------
       edm::EDGetTokenT<reco::VertexCollection> vertexSrc_;

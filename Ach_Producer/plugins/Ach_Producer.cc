@@ -246,6 +246,9 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       double random = fRand(0.0, 1.0);
       if( random > efficiency ) continue;
 
+      genPt->Fill( genpt );
+      genEta->Fill( geneta );
+
       if( gencharge == +1 ){ GEN_N_pos_count++; }
       if( gencharge == -1 ){ GEN_N_neg_count++; }
 
@@ -322,6 +325,8 @@ Ach_Producer::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
+  genPt = fs->make<TH1D>("genPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
+  genEta = fs->make<TH1D>("genEta", ";#eta", NetaBins, etaBinsArray);
 
   HFsumEt = fs->make<TH1D>("HFsumEt", ";HFsumEt", 10000, 0, 10000);
 

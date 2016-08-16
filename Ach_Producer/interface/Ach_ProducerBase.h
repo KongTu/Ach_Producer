@@ -203,6 +203,9 @@ class Ach_Producer : public edm::EDAnalyzer {
       TH1D* hfPhi;
       TH1D* trkPt;
       TH1D* trk_eta;
+      TH1D* genPt;
+      TH1D* genEta;
+
       TH1D* cbinHist;
       TH1D* q2_mag;
 

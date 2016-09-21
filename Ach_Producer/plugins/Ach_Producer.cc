@@ -269,7 +269,7 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   else{
 
     TRandom* ra = new TRandom();
-    double smearing = ra->Gaus(0.0, smearFactor_);
+    double smearing = ra->Gaus(RECO_Ach_corr, smearFactor_);
 
     GEN_Ach_corr = RECO_Ach_corr + smearing;
     GEN_Ach_uncorr = RECO_Ach_uncorr + smearing;

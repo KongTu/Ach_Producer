@@ -271,8 +271,8 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     TRandom* ra = new TRandom();
     double smearing = ra->Gaus(0.0, smearFactor_);
 
-    GEN_Ach_corr = sqrt(RECO_Ach_corr*RECO_Ach_corr - smearing*smearing);
-    GEN_Ach_uncorr = sqrt(RECO_Ach_uncorr*RECO_Ach_uncorr - smearing*smearing);
+    GEN_Ach_corr = RECO_Ach_corr + smearing;
+    GEN_Ach_uncorr = RECO_Ach_uncorr + smearing;
   }
 
   Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);

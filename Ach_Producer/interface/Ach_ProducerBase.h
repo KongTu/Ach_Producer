@@ -237,6 +237,8 @@ class Ach_Producer : public edm::EDAnalyzer {
       double offlineChi2_;
       double offlinenhits_;
 
+      double smearFactor_;
+
       double v0sNhitsCut_;
       double dcaCut_;
       double decayLengthCut_;

@@ -64,6 +64,8 @@ genSrc_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag
   offlineChi2_ = iConfig.getUntrackedParameter<double>("offlineChi2", 0.0);
   offlinenhits_ = iConfig.getUntrackedParameter<double>("offlinenhits", 0.0);
 
+  smearFactor_ = iConfig.getUntrackedParameter<double>("smearFactor", 0.0);
+
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
   ptBins_ = iConfig.getUntrackedParameter<std::vector<double>>("ptBins");
@@ -255,15 +257,19 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
 
-
-
   double RECO_Ach_uncorr = (N_pos_count_uncorr - N_neg_count_uncorr) / (N_pos_count_uncorr + N_neg_count_uncorr);
   double RECO_Ach_corr = (N_pos_count_corr - N_neg_count_corr) / (N_pos_count_corr + N_neg_count_corr);  
-  double GEN_Ach = (GEN_N_pos_count - GEN_N_neg_count) / (GEN_N_pos_count + GEN_N_neg_count);
+  double GEN_Ach_uncorr = 0.0;
+  double GEN_Ach_corr = 0.0;
 
-  //double Ach_uw = Ach_uncorr_weight[eff_-2]->GetBinContent(Ach_uncorr_weight[eff_-2]->FindBin(RECO_Ach_uncorr));
-  //double Ach_cw = Ach_corr_weight[eff_-2]->GetBinContent(Ach_corr_weight[eff_-2]->FindBin(RECO_Ach_corr));
-  //double Ach_gen = Ach_gen_weight[eff_-2]->GetBinContent(Ach_gen_weight[eff_-2]->FindBin(GEN_Ach));
+  if( doGenParticle_){
+    GEN_Ach_corr = (GEN_N_pos_count - GEN_N_neg_count) / (GEN_N_pos_count + GEN_N_neg_count);
+    GEN_Ach_uncorr = GEN_Ach_corr;
+  }
+  else{
+    GEN_Ach_corr = sqrt(RECO_Ach_corr*RECO_Ach_corr - smearFactor_*smearFactor_);
+    GEN_Ach_uncorr = sqrt(RECO_Ach_uncorr*RECO_Ach_uncorr - smearFactor_*smearFactor_);
+  }
 
   Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);
   Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count);
@@ -271,8 +277,8 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count);
   Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count);
 
-  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach);
-  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach);
+  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach_uncorr);
+  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach_corr);
 
 
 }

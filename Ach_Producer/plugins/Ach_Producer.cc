@@ -270,15 +270,15 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     TRandom* ra = new TRandom();
 
-    //double mean = 0.0;
+    double mean = 0.0;
     // if( RECO_Ach_corr > -0.08 && RECO_Ach_corr < -0.04 ) mean = -0.037;
     // if( RECO_Ach_corr > -0.04 && RECO_Ach_corr < 0.000 ) mean = -0.008;
     // if( RECO_Ach_corr > 0.000 && RECO_Ach_corr < +0.04 ) mean = 0.013;
     // if( RECO_Ach_corr > +0.04 && RECO_Ach_corr < +0.08 ) mean = +0.037;
 
-    //double smearing = ra->Gaus(mean, smearFactor_);
+    double smearing = ra->Gaus(mean, smearFactor_);
 
-    double smearing = ra->Rndm();
+    //double smearing = ra->Rndm();
 
     GEN_Ach_corr = RECO_Ach_corr + smearing;
     GEN_Ach_uncorr = RECO_Ach_uncorr + smearing;
@@ -354,8 +354,8 @@ Ach_Producer::beginJob()
   Npos_corr = fs->make<TH2D>("Npos_corr",";Npos_corr", 2000, 0, 2000, 2000, 0, 2000);
   Nneg_corr = fs->make<TH2D>("Nneg_corr",";Nneg_corr", 2000, 0, 2000, 2000, 0, 2000);
 
-  Ach_uncorr = fs->make<TH2D>("Ach_uncorr",";Ach_uncorr", 1000, -0.4, 0.4, 1000, -0.4, 0.4 );
-  Ach_corr = fs->make<TH2D>("Ach_corr",";Ach_corr", 1000, -0.4, 0.4, 1000, -0.4, 0.4 );
+  Ach_uncorr = fs->make<TH2D>("Ach_uncorr",";Ach_uncorr", 10, -0.4, 0.4, 10, -0.4, 0.4 );
+  Ach_corr = fs->make<TH2D>("Ach_corr",";Ach_corr", 10, -0.4, 0.4, 10, -0.4, 0.4 );
 
 }
 // ------------ method called once each job just after ending the event loop  ------------

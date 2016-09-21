@@ -276,7 +276,9 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     // if( RECO_Ach_corr > 0.000 && RECO_Ach_corr < +0.04 ) mean = 0.013;
     // if( RECO_Ach_corr > +0.04 && RECO_Ach_corr < +0.08 ) mean = +0.037;
 
-    double smearing = ra->Gaus(mean, smearFactor_);
+    //double smearing = ra->Gaus(mean, smearFactor_);
+
+    double smearing = ra->Rndm();
 
     GEN_Ach_corr = RECO_Ach_corr + smearing;
     GEN_Ach_uncorr = RECO_Ach_uncorr + smearing;

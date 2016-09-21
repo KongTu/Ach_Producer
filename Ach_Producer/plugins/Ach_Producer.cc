@@ -270,7 +270,7 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     TRandom* ra = new TRandom();
 
-    double mean = 0.0;
+    //double mean = 0.0;
     // if( RECO_Ach_corr > -0.08 && RECO_Ach_corr < -0.04 ) mean = -0.037;
     // if( RECO_Ach_corr > -0.04 && RECO_Ach_corr < 0.000 ) mean = -0.008;
     // if( RECO_Ach_corr > 0.000 && RECO_Ach_corr < +0.04 ) mean = 0.013;

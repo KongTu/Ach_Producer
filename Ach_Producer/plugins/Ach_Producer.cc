@@ -354,8 +354,8 @@ Ach_Producer::beginJob()
   Npos_corr = fs->make<TH2D>("Npos_corr",";Npos_corr", 2000, 0, 2000, 2000, 0, 2000);
   Nneg_corr = fs->make<TH2D>("Nneg_corr",";Nneg_corr", 2000, 0, 2000, 2000, 0, 2000);
 
-  Ach_uncorr = fs->make<TH2D>("Ach_uncorr",";Ach_uncorr", 10, -0.4, 0.4, 10, -0.4, 0.4 );
-  Ach_corr = fs->make<TH2D>("Ach_corr",";Ach_corr", 10, -0.4, 0.4, 10, -0.4, 0.4 );
+  Ach_uncorr = fs->make<TH2D>("Ach_uncorr",";Ach_uncorr", 1000, -0.4, 0.4, 1000, -0.4, 0.4 );
+  Ach_corr = fs->make<TH2D>("Ach_corr",";Ach_corr", 1000, -0.4, 0.4, 1000, -0.4, 0.4 );
 
 }
 // ------------ method called once each job just after ending the event loop  ------------

@@ -64,6 +64,8 @@ genSrc_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag
   offlineChi2_ = iConfig.getUntrackedParameter<double>("offlineChi2", 0.0);
   offlinenhits_ = iConfig.getUntrackedParameter<double>("offlinenhits", 0.0);
 
+  smearFactor_ = iConfig.getUntrackedParameter<double>("smearFactor", 0.0);
+
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
   ptBins_ = iConfig.getUntrackedParameter<std::vector<double>>("ptBins");
@@ -255,24 +257,43 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
 
-
-
   double RECO_Ach_uncorr = (N_pos_count_uncorr - N_neg_count_uncorr) / (N_pos_count_uncorr + N_neg_count_uncorr);
   double RECO_Ach_corr = (N_pos_count_corr - N_neg_count_corr) / (N_pos_count_corr + N_neg_count_corr);  
-  double GEN_Ach = (GEN_N_pos_count - GEN_N_neg_count) / (GEN_N_pos_count + GEN_N_neg_count);
+  double GEN_Ach_uncorr = 0.0;
+  double GEN_Ach_corr = 0.0;
 
-  //double Ach_uw = Ach_uncorr_weight[eff_-2]->GetBinContent(Ach_uncorr_weight[eff_-2]->FindBin(RECO_Ach_uncorr));
-  //double Ach_cw = Ach_corr_weight[eff_-2]->GetBinContent(Ach_corr_weight[eff_-2]->FindBin(RECO_Ach_corr));
-  //double Ach_gen = Ach_gen_weight[eff_-2]->GetBinContent(Ach_gen_weight[eff_-2]->FindBin(GEN_Ach));
+  if( doGenParticle_){
+    GEN_Ach_corr = (GEN_N_pos_count - GEN_N_neg_count) / (GEN_N_pos_count + GEN_N_neg_count);
+    GEN_Ach_uncorr = GEN_Ach_corr;
+  }
+  else{
 
-  Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);
-  Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count);
+    TRandom* ra = new TRandom();
 
-  Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count);
-  Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count);
+    double mean = 0.0;
+    // if( RECO_Ach_corr > -0.08 && RECO_Ach_corr < -0.04 ) mean = -0.037;
+    // if( RECO_Ach_corr > -0.04 && RECO_Ach_corr < 0.000 ) mean = -0.008;
+    // if( RECO_Ach_corr > 0.000 && RECO_Ach_corr < +0.04 ) mean = 0.013;
+    // if( RECO_Ach_corr > +0.04 && RECO_Ach_corr < +0.08 ) mean = +0.037;
 
-  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach);
-  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach);
+    double smearing = ra->Gaus(mean, smearFactor_);
+
+    //double smearing = ra->Rndm();
+
+    GEN_Ach_corr = RECO_Ach_corr + smearing;
+    GEN_Ach_uncorr = RECO_Ach_uncorr + smearing;
+  }
+
+  double weight = NtrkReweight->GetBinContent( NtrkReweight->FindBin( nTracks ) );//weight = Hydjet/EPOS
+
+  Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count, weight);
+  Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count, weight);
+
+  Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count, weight);
+  Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count, weight);
+
+  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach_uncorr, weight);
+  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach_corr, weight);
 
 
 }
@@ -316,8 +337,12 @@ Ach_Producer::beginJob()
   edm::FileInPath fip4("Ach_Producer/Ach_Producer/data/Ach_gen_weight.root");
   TFile f4(fip4.fullPath().c_str(),"READ");
   for(int i = 0; i < 3; i++){
-     Ach_gen_weight[i] = (TH1D*)f3.Get(Form("ApplyEPOS_%d",i));
+     Ach_gen_weight[i] = (TH1D*)f4.Get(Form("ApplyEPOS_%d",i));
   }
+
+  edm::FileInPath fip5("Ach_Producer/Ach_Producer/data/mult300_350_reweighed.root");
+  TFile f5(fip5.fullPath().c_str(),"READ");
+  NtrkReweight = (TH1D*)f5.Get("Ntrk");
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);

@@ -182,6 +182,7 @@ class Ach_Producer : public edm::EDAnalyzer {
       TH1D* Ach_uncorr_weight[3];
       TH1D* Ach_corr_weight[3];
       TH1D* Ach_gen_weight[3];
+      TH1D* NtrkReweight;
 
       TH1D* HFsumEt;
 
@@ -236,6 +237,8 @@ class Ach_Producer : public edm::EDAnalyzer {
       double offlineDCA_;
       double offlineChi2_;
       double offlinenhits_;
+
+      double smearFactor_;
 
       double v0sNhitsCut_;
       double dcaCut_;

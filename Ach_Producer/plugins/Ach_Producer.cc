@@ -293,9 +293,6 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count);
   Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count);
 
-  cout << "GEN_Ach_uncorr : " << GEN_Ach_uncorr << endl;
-  cout << "RECO_Ach_corr: " << RECO_Ach_corr << endl;
-  
   Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach_uncorr);
   Ach_corr->Fill(RECO_Ach_corr, GEN_Ach_corr);
 

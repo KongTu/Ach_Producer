@@ -268,20 +268,7 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   }
   else{
 
-    TRandom* ra = new TRandom();
-
-    double mean = 0.0;
-    // if( RECO_Ach_corr > -0.08 && RECO_Ach_corr < -0.04 ) mean = -0.037;
-    // if( RECO_Ach_corr > -0.04 && RECO_Ach_corr < 0.000 ) mean = -0.008;
-    // if( RECO_Ach_corr > 0.000 && RECO_Ach_corr < +0.04 ) mean = 0.013;
-    // if( RECO_Ach_corr > +0.04 && RECO_Ach_corr < +0.08 ) mean = +0.037;
-
-    double smearing = ra->Gaus(mean, smearFactor_);
-
-    //double smearing = ra->Rndm();
-
-    GEN_Ach_corr = RECO_Ach_corr + smearing;
-    GEN_Ach_uncorr = RECO_Ach_uncorr + smearing;
+    cout << "doGenParticle is FALSE" << endl;
   }
 
   double weight = NtrkReweight->GetBinContent( NtrkReweight->FindBin( nTracks ) );//weight = Hydjet/EPOS
@@ -294,7 +281,6 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach_uncorr, weight);
   Ach_corr->Fill(RECO_Ach_corr, GEN_Ach_corr, weight);
-
 
 }
 // ------------ method called once each job just before starting event loop  ------------

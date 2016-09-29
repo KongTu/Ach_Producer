@@ -239,6 +239,20 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       double geneta = genCand.eta();
       int gencharge = genCand.charge();
       double genpt = genCand.pt();
+      int id = genCand.pdgId();
+
+      if( fabs(id) == 310 || fabs(id) == 3122 
+                          || fabs(id) == 3322
+                          || fabs(id) == 3222
+                          || fabs(id) == 3212
+                          || fabs(id) == 3112 
+                          || fabs(id) == 3224
+                          || fabs(id) == 3214
+                          || fabs(id) == 3114
+                          || fabs(id) == 3312 
+                          || fabs(id) == 3324 
+                          || fabs(id) == 3314 
+                          || fabs(id) == 3334) continue;
 
       if( status != 1 || gencharge == 0 ) continue;
       if( fabs(geneta) > 2.4 ) continue;
@@ -271,16 +285,16 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     cout << "doGenParticle is FALSE" << endl;
   }
 
-  double weight = NtrkReweight->GetBinContent( NtrkReweight->FindBin( nTracks ) );//weight = Hydjet/EPOS
+  //double weight = NtrkReweight->GetBinContent( NtrkReweight->FindBin( nTracks ) );//weight = Hydjet/EPOS
 
-  Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count, weight);
-  Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count, weight);
+  Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);
+  Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count);
 
-  Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count, weight);
-  Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count, weight);
+  Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count);
+  Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count);
 
-  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach_uncorr, weight);
-  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach_corr, weight);
+  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach_uncorr);
+  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach_corr);
 
 }
 // ------------ method called once each job just before starting event loop  ------------

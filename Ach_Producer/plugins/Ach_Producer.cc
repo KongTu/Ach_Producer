@@ -241,18 +241,18 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       double genpt = genCand.pt();
       int id = genCand.pdgId();
 
-      if( fabs(id) == 310 || fabs(id) == 3122 
-                          || fabs(id) == 3322
-                          || fabs(id) == 3222
-                          || fabs(id) == 3212
-                          || fabs(id) == 3112 
-                          || fabs(id) == 3224
-                          || fabs(id) == 3214
-                          || fabs(id) == 3114
-                          || fabs(id) == 3312 
-                          || fabs(id) == 3324 
-                          || fabs(id) == 3314 
-                          || fabs(id) == 3334) continue;
+      // if( fabs(id) == 310 || fabs(id) == 3122 
+      //                     || fabs(id) == 3322
+      //                     || fabs(id) == 3222
+      //                     || fabs(id) == 3212
+      //                     || fabs(id) == 3112 
+      //                     || fabs(id) == 3224
+      //                     || fabs(id) == 3214
+      //                     || fabs(id) == 3114
+      //                     || fabs(id) == 3312 
+      //                     || fabs(id) == 3324 
+      //                     || fabs(id) == 3314 
+      //                     || fabs(id) == 3334) continue;
 
       if( status != 1 || gencharge == 0 ) continue;
       if( fabs(geneta) > 2.4 ) continue;
@@ -316,7 +316,7 @@ Ach_Producer::beginJob()
     ptBinsArray[i] = ptBins_[i];
   }
 
-  edm::FileInPath fip1("Ach_Producer/Ach_Producer/data/EPOS_PbPb_eff_v1.root");
+  edm::FileInPath fip1("Ach_Producer/Ach_Producer/data/Hydjet_PbPb_eff_v1.root");
   TFile f1(fip1.fullPath().c_str(),"READ");
   for(int i = 0; i < 5; i++){
      effTable[i] = (TH2D*)f1.Get(Form("eff_%d",i+1));

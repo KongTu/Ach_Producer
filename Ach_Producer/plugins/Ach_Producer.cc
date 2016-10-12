@@ -239,7 +239,7 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       double geneta = genCand.eta();
       int gencharge = genCand.charge();
       double genpt = genCand.pt();
-      int id = genCand.pdgId();
+      //int id = genCand.pdgId();
 
       // if( fabs(id) == 310 || fabs(id) == 3122 
       //                     || fabs(id) == 3322

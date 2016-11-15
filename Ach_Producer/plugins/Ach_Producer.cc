@@ -144,7 +144,6 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   double etHFtowerSumMinus = 0.0;
   double etHFtowerSum = 0.0;
   
-
   if( useCentrality_ ){
 
     for( unsigned i = 0; i<towers->size(); ++ i){
@@ -163,20 +162,6 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     if( etHFtowerSum < Nmin_ || etHFtowerSum > Nmax_ ) return;
 
     HFsumEt->Fill( etHFtowerSum );
-
-
-    // int bin = -1;
-    // for(int j=0; j<200; j++){
-    //   if( etHFtowerSum >= centBins_[j] ){
-    //      bin = j; break;
-    //   }
-    // }
-
-    //int hiBin = bin;
-    //if( hiBin < Nmin_ || hiBin >= Nmax_ ) return;
-    
-    //cbinHist->Fill( hiBin );
-
   }
 
   Ntrk->Fill( nTracks );
@@ -239,23 +224,23 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       double geneta = genCand.eta();
       int gencharge = genCand.charge();
       double genpt = genCand.pt();
-      int id = genCand.pdgId();
+      //int id = genCand.pdgId();
 
-      if( fabs(id) == 310 || fabs(id) == 3122 
-                          || fabs(id) == 3322
-                          || fabs(id) == 3222
-                          || fabs(id) == 3212
-                          || fabs(id) == 3112 
-                          || fabs(id) == 3224
-                          || fabs(id) == 3214
-                          || fabs(id) == 3114
-                          || fabs(id) == 3312 
-                          || fabs(id) == 3324 
-                          || fabs(id) == 3314 
-                          || fabs(id) == 3334) continue;
+      // if( fabs(id) == 310 || fabs(id) == 3122 
+      //                     || fabs(id) == 3322
+      //                     || fabs(id) == 3222
+      //                     || fabs(id) == 3212
+      //                     || fabs(id) == 3112 
+      //                     || fabs(id) == 3224
+      //                     || fabs(id) == 3214
+      //                     || fabs(id) == 3114
+      //                     || fabs(id) == 3312 
+      //                     || fabs(id) == 3324 
+      //                     || fabs(id) == 3314 
+      //                     || fabs(id) == 3334) continue;
 
       if( status != 1 || gencharge == 0 ) continue;
-      if( fabs(geneta) > 2.4 ) continue;
+      if( fabs(geneta) > etaTracker_ ) continue;
       if( genpt < 0.3 || genpt > 3.0 ) continue;
 
       // double efficiency = effTable[eff_]->GetBinContent(effTable[eff_]->FindBin(geneta, genpt));
@@ -281,7 +266,6 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     GEN_Ach_uncorr = GEN_Ach_corr;
   }
   else{
-
     cout << "doGenParticle is FALSE" << endl;
   }
 
@@ -316,7 +300,7 @@ Ach_Producer::beginJob()
     ptBinsArray[i] = ptBins_[i];
   }
 
-  edm::FileInPath fip1("Ach_Producer/Ach_Producer/data/EPOS_PbPb_eff_v1.root");
+  edm::FileInPath fip1("Ach_Producer/Ach_Producer/data/Hydjet_PbPb_eff_v1.root");
   TFile f1(fip1.fullPath().c_str(),"READ");
   for(int i = 0; i < 5; i++){
      effTable[i] = (TH2D*)f1.Get(Form("eff_%d",i+1));

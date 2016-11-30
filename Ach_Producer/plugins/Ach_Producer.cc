@@ -146,7 +146,9 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   if( useCentrality_ ){
 
-    for( unsigned i = 0; i<towers->size(); ++ i){
+    if( doGenParticle_ ){
+
+      for( unsigned i = 0; i<towers->size(); ++ i){
        const CaloTower & tower = (*towers)[ i ];
        double eta = tower.eta();
        bool isHF = tower.ietaAbs() > 29;
@@ -156,12 +158,24 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
           if(isHF && eta < 0){
             etHFtowerSumMinus += tower.pt();
           }
+      }
+      etHFtowerSum=etHFtowerSumPlus + etHFtowerSumMinus;
+
+      if( etHFtowerSum < Nmin_ || etHFtowerSum > Nmax_ ) return;
+
+      HFsumEt->Fill( etHFtowerSum );
     }
-    etHFtowerSum=etHFtowerSumPlus + etHFtowerSumMinus;
+    else{
 
-    if( etHFtowerSum < Nmin_ || etHFtowerSum > Nmax_ ) return;
+      CentralityProvider * centProvider = 0;
+      if (!centProvider) centProvider = new CentralityProvider(iSetup);
+      centProvider->newEvent(iEvent,iSetup);
+      int hiBin = centProvider->getBin();
+      cbinHist->Fill( hiBin );
+      if( hiBin < Nmin_ || hiBin >= Nmax_ ) return;
+    }
 
-    HFsumEt->Fill( etHFtowerSum );
+    
   }
 
   Ntrk->Fill( nTracks );

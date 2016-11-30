@@ -172,6 +172,13 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   double N_pos_count_corr = 0.0;
   double N_neg_count_corr = 0.0;
 
+  double N_pos_after_count_uncorr = 0.0;
+  double N_neg_after_count_uncorr = 0.0;
+
+  double N_pos_after_count_corr = 0.0;
+  double N_neg_after_count_corr = 0.0;
+
+
   for(unsigned it = 0; it < tracks->size(); it++){
 
     const reco::Track & trk = (*tracks)[it];
@@ -207,6 +214,13 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     if( trk.charge() == +1 ){ N_pos_count_uncorr++; N_pos_count_corr += weight;}
     if( trk.charge() == -1 ){ N_neg_count_uncorr++; N_neg_count_corr += weight;}
+      
+    double efficiency = effTable[eff_]->GetBinContent(effTable[eff_]->FindBin(trkEta, trk.pt()));
+    double random = fRand(0.0, 1.0);
+    if( random > efficiency ) continue;
+
+    if( trk.charge() == +1 ){ N_pos_after_count_uncorr++; N_pos_after_count_corr += weight;}
+    if( trk.charge() == -1 ){ N_neg_after_count_uncorr++; N_neg_after_count_corr += weight;}
 
   }
 
@@ -260,25 +274,39 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   double RECO_Ach_corr = (N_pos_count_corr - N_neg_count_corr) / (N_pos_count_corr + N_neg_count_corr);  
   double GEN_Ach_uncorr = 0.0;
   double GEN_Ach_corr = 0.0;
+  double RECO_2_Ach_uncorr = (N_pos_after_count_uncorr - N_neg_after_count_uncorr) / (N_pos_after_count_uncorr + N_neg_after_count_uncorr); 
+  double RECO_2_Ach_corr = (N_pos_after_count_corr - N_neg_after_count_corr) / (N_pos_after_count_corr + N_neg_after_count_corr); 
 
   if( doGenParticle_){
+    
     GEN_Ach_corr = (GEN_N_pos_count - GEN_N_neg_count) / (GEN_N_pos_count + GEN_N_neg_count);
     GEN_Ach_uncorr = GEN_Ach_corr;
+
+    Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);
+    Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count);
+
+    Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count);
+    Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count);
+
+    Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach_uncorr);
+    Ach_corr->Fill(RECO_Ach_corr, GEN_Ach_corr);
   }
   else{
-    cout << "doGenParticle is FALSE" << endl;
+
+    Npos_uncorr->Fill(N_pos_after_count_uncorr, N_pos_count_uncorr);
+    Nneg_uncorr->Fill(N_neg_after_count_uncorr, N_neg_count_uncorr);
+
+    Npos_corr->Fill(N_pos_after_count_corr, N_pos_count_corr);
+    Nneg_corr->Fill(N_neg_after_count_corr, N_neg_count_corr);
+
+    Ach_uncorr->Fill(RECO_2_Ach_uncorr, RECO_Ach_uncorr);
+    Ach_corr->Fill(RECO_2_Ach_corr, RECO_Ach_corr);
   }
 
   //double weight = NtrkReweight->GetBinContent( NtrkReweight->FindBin( nTracks ) );//weight = Hydjet/EPOS
 
-  Npos_uncorr->Fill(N_pos_count_uncorr, GEN_N_pos_count);
-  Nneg_uncorr->Fill(N_neg_count_uncorr, GEN_N_neg_count);
 
-  Npos_corr->Fill(N_pos_count_corr, GEN_N_pos_count);
-  Nneg_corr->Fill(N_neg_count_corr, GEN_N_neg_count);
-
-  Ach_uncorr->Fill(RECO_Ach_uncorr, GEN_Ach_uncorr);
-  Ach_corr->Fill(RECO_Ach_corr, GEN_Ach_corr);
+  
 
 }
 // ------------ method called once each job just before starting event loop  ------------
@@ -300,7 +328,7 @@ Ach_Producer::beginJob()
     ptBinsArray[i] = ptBins_[i];
   }
 
-  edm::FileInPath fip1("Ach_Producer/Ach_Producer/data/EPOS_PbPb_eff_v1.root");
+  edm::FileInPath fip1("Ach_Producer/Ach_Producer/data/Hydjet_PbPb_eff_v1.root");
   TFile f1(fip1.fullPath().c_str(),"READ");
   for(int i = 0; i < 5; i++){
      effTable[i] = (TH2D*)f1.Get(Form("eff_%d",i+1));

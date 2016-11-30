@@ -167,15 +167,31 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
     else{
 
-      CentralityProvider * centProvider = 0;
-      if (!centProvider) centProvider = new CentralityProvider(iSetup);
-      centProvider->newEvent(iEvent,iSetup);
-      int hiBin = centProvider->getBin();
+      for( unsigned i = 0; i<towers->size(); ++ i){
+       const CaloTower & tower = (*towers)[ i ];
+       double eta = tower.eta();
+       bool isHF = tower.ietaAbs() > 29;
+          if(isHF && eta > 0){
+            etHFtowerSumPlus += tower.pt();
+          }
+          if(isHF && eta < 0){
+            etHFtowerSumMinus += tower.pt();
+          }
+      }
+      etHFtowerSum=etHFtowerSumPlus + etHFtowerSumMinus;
+
+      int bin = -1;
+      for(int j=0; j<200; j++){
+        if( etHFtowerSum >= centBins_[j] ){
+           bin = j; break;
+        }
+      }
+
+      int hiBin = bin;
       cbinHist->Fill( hiBin );
       if( hiBin < Nmin_ || hiBin >= Nmax_ ) return;
-    }
-
     
+    }
   }
 
   Ntrk->Fill( nTracks );

@@ -138,12 +138,30 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   }
 
-  if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
-
   double etHFtowerSumPlus = 0.0;
   double etHFtowerSumMinus = 0.0;
   double etHFtowerSum = 0.0;
+
+  for( unsigned i = 0; i<towers->size(); ++ i){
+       const CaloTower & tower = (*towers)[ i ];
+       double eta = tower.eta();
+       bool isHF = tower.ietaAbs() > 29;
+          if(isHF && eta > 0){
+            etHFtowerSumPlus += tower.pt();
+          }
+          if(isHF && eta < 0){
+            etHFtowerSumMinus += tower.pt();
+          }
+  }
   
+  etHFtowerSum=etHFtowerSumPlus + etHFtowerSumMinus;
+  
+  NtrkHF->Fill(nTracks, etHFtowerSum);
+  
+  etHFtowerSumPlus = 0.0;
+  etHFtowerSumMinus = 0.0;
+  etHFtowerSum = 0.0;
+
   if( useCentrality_ ){
 
     if( doGenParticle_ ){
@@ -193,6 +211,9 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     }
   }
+
+
+  if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
 
   Ntrk->Fill( nTracks );
 
@@ -404,6 +425,8 @@ Ach_Producer::beginJob()
 
   Ach_uncorr = fs->make<TH2D>("Ach_uncorr",";Ach_uncorr", 1000, -0.4, 0.4, 1000, -0.4, 0.4 );
   Ach_corr = fs->make<TH2D>("Ach_corr",";Ach_corr", 1000, -0.4, 0.4, 1000, -0.4, 0.4 );
+
+  NtrkHF = fs->make<TH2D>("NtrkHF",";NtrkHF", 2000, 0, 2000, 10000, 0, 10000 );
 
 }
 // ------------ method called once each job just after ending the event loop  ------------

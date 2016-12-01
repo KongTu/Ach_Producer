@@ -194,6 +194,8 @@ class Ach_Producer : public edm::EDAnalyzer {
       TH2D* Ach_uncorr;
       TH2D* Ach_corr;
 
+      TH2D* NtrkHF;
+
       TH1D* c2_ab;
       TH1D* c2_ac;
       TH1D* c2_cb;

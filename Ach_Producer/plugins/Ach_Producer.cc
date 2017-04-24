@@ -264,7 +264,7 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     trk_eta->Fill(trkEta, weight);
 
     double random1 = fRand(0.0, 1.0);
-    if( random > 0.5 ){
+    if( random1 > 0.5 ){
 
       if( trk.charge() == +1 ){ N_pos_count_uncorr++; N_pos_count_corr += weight;}
       if( trk.charge() == -1 ){ N_neg_count_uncorr++; N_neg_count_corr += weight;}
@@ -320,7 +320,7 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       genEta->Fill( geneta );
 
       double random1 = fRand(0.0, 1.0);
-      if( random > 0.5 ){
+      if( random1 > 0.5 ){
         if( gencharge == +1 ){ GEN_N_pos_count++; }
         if( gencharge == -1 ){ GEN_N_neg_count++; }
       }

@@ -263,9 +263,13 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     trkPt->Fill(trk.pt(), weight);
     trk_eta->Fill(trkEta, weight);
 
-    if( trk.charge() == +1 ){ N_pos_count_uncorr++; N_pos_count_corr += weight;}
-    if( trk.charge() == -1 ){ N_neg_count_uncorr++; N_neg_count_corr += weight;}
-      
+    double random1 = fRand(0.0, 1.0);
+    if( random > 0.5 ){
+
+      if( trk.charge() == +1 ){ N_pos_count_uncorr++; N_pos_count_corr += weight;}
+      if( trk.charge() == -1 ){ N_neg_count_uncorr++; N_neg_count_corr += weight;}
+    }
+
     double efficiency = effTable[eff_]->GetBinContent(effTable[eff_]->FindBin(trkEta, trk.pt()));
     double random = fRand(0.0, 1.0);
     if( random > efficiency ) continue;
@@ -315,9 +319,11 @@ Ach_Producer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       genPt->Fill( genpt );
       genEta->Fill( geneta );
 
-      if( gencharge == +1 ){ GEN_N_pos_count++; }
-      if( gencharge == -1 ){ GEN_N_neg_count++; }
-
+      double random1 = fRand(0.0, 1.0);
+      if( random > 0.5 ){
+        if( gencharge == +1 ){ GEN_N_pos_count++; }
+        if( gencharge == -1 ){ GEN_N_neg_count++; }
+      }
     }
   }
 
